@@ -2,7 +2,7 @@
 
 Job aggregation platform for Nigeria and Africa. Pulls job listings from across the internet, refreshes them daily, and helps candidates find and apply for roles fast.
 
-Live site: https://quickroles.africa (coming soon)
+Live site: https://quickroles.africa (launching)
 
 ## Status
 
