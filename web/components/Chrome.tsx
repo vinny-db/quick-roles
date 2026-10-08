@@ -30,6 +30,7 @@ export function Footer() {
         <a href="https://t.me/quickroles" rel="noopener">Telegram channel</a>
         <Link href="/report">Report a scam listing</Link>
         <Link href="/privacy">Privacy</Link>
+        <Link href="/terms">Terms</Link>
         <span className="end">quickroles.africa</span>
       </div>
     </footer>

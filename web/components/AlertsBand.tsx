@@ -21,7 +21,7 @@ export function AlertsBand({ keyword = '', location = '', compact = false }: { k
           <button type="submit" className="btn btn-ink">Send me jobs</button>
         </div>
         <span className="hint">Email, phone, or both. All optional, pick what you check.</span>
-        <label className="consent"><input type="checkbox" name="consent" value="yes" required style={{ marginTop: 3 }} /> Yes, send me matching jobs. I can stop anytime.</label>
+        <label className="consent"><input type="checkbox" name="consent" value="yes" required style={{ marginTop: 3 }} /> Yes, send me matching jobs. I can stop anytime. <a href="/privacy" style={{ textDecoration: 'underline' }}>How we handle your details</a>.</label>
         <input type="hidden" name="src" value={compact ? 'job' : 'home'} />
       </form>
     </div>

@@ -58,6 +58,6 @@ export function locationLine(j: { company?: string | null; location_text?: strin
 
 export function logoFor(j: { logo_url?: string | null; employer_domain?: string | null }) {
   if (j.logo_url) return j.logo_url;
-  if (j.employer_domain) return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(j.employer_domain)}&sz=128`;
+  if (j.employer_domain) return `/api/logo?d=${encodeURIComponent(j.employer_domain)}`;
   return null;
 }

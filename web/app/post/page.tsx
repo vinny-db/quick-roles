@@ -16,7 +16,7 @@ export default async function Post({ searchParams }: { searchParams: Promise<{ o
           <label htmlFor="salary_text">Salary (optional, shown as typed)</label><input id="salary_text" name="salary_text" maxLength={60} />
           <label htmlFor="apply_url">Where to apply (link or email)</label><input id="apply_url" name="apply_url" required maxLength={300} />
           <label htmlFor="description">Description</label><textarea id="description" name="description" required maxLength={6000} />
-          <label style={{ display: 'flex', gap: 8, alignItems: 'flex-start', fontWeight: 500 }}><input type="checkbox" name="agree" value="yes" required style={{ marginTop: 3 }} /> This is a real vacancy and we never charge applicants a fee.</label>
+          <label style={{ display: 'flex', gap: 8, alignItems: 'flex-start', fontWeight: 500 }}><input type="checkbox" name="agree" value="yes" required style={{ marginTop: 3 }} /> This is a real vacancy, we never charge applicants a fee, and we accept the <a href="/terms" style={{ textDecoration: 'underline' }}>terms</a>.</label>
           <button type="submit" className="btn btn-ink" style={{ width: 'fit-content' }}>Submit for review</button>
         </form>
       )}
