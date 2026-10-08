@@ -2,7 +2,7 @@
 // With SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY set, writes to the database; otherwise dry-run to pipeline/out/.
 import { SOURCES, CADENCE_MINUTES } from './sources.js';
 import { normalize, slugify } from './lib/normalize.js';
-import { DRY, upsert, select, patch, writeSnapshot } from './lib/db.js';
+import { DRY, upsert, select, patch, rpc, writeSnapshot } from './lib/db.js';
 
 const args = Object.fromEntries(process.argv.slice(2).map((a, i, arr) => (a.startsWith('--') ? [a.slice(2), arr[i + 1] && !arr[i + 1].startsWith('--') ? arr[i + 1] : true] : [])).filter((x) => x.length));
 
