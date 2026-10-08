@@ -151,7 +151,8 @@ export function hashJob(title, company, city) {
 export function normalize(raw, source) {
   const cleanTitle = (raw.title || '')
     .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}]/gu, ' ') // emoji
-    .replace(/^\s*(?:\d+[.)]|[-•*#])\s*/, '') // "1. ", "- ", "• "
+    .trim()
+    .replace(/^(?:\d+[.)]|[-•*#])\s*/, '') // "1. ", "- ", "• "
     .replace(/^(?:job title|position|role|vacancy)\s*:\s*/i, '')
     .replace(/\s+/g, ' ').trim();
   const split = splitTitleCompany(cleanTitle, (raw.company || '').replace(/\s+/g, ' ').trim());
