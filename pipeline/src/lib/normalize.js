@@ -130,7 +130,8 @@ function titleCase(s) {
 
 // "Finance Analyst Job at Paystack" -> { title: 'Finance Analyst', company: 'Paystack' }
 export function splitTitleCompany(title = '', company = '') {
-  const m = title.match(/^(.+?)\s+at\s+([A-Z0-9][^|]{1,60}?)\s*(?:\(|$)/);
+  // "Accounts Executive Job at the Label Store" is a strong signal; plain "X at Y" needs a capitalised Y.
+  const m = title.match(/^(.+?\s+(?:job|vacancy|role|position|recruitment))\s+at\s+([^|]{1,60}?)\s*(?:\(|$)/i) || title.match(/^(.+?)\s+at\s+([A-Z0-9][^|]{1,60}?)\s*(?:\(|$)/);
   if (!m) return { title: title.trim(), company: company || '' };
   const tail = m[2].trim().replace(/[\s,.-]+$/, '');
   if (company && company.toLowerCase() !== tail.toLowerCase() && !tail.toLowerCase().startsWith(company.toLowerCase().slice(0, 6))) return { title: title.trim(), company };
