@@ -149,7 +149,12 @@ export function hashJob(title, company, city) {
  * @returns {object|null} row for jobs table, or null if the job should be dropped
  */
 export function normalize(raw, source) {
-  const split = splitTitleCompany((raw.title || '').replace(/\s+/g, ' ').trim(), (raw.company || '').replace(/\s+/g, ' ').trim());
+  const cleanTitle = (raw.title || '')
+    .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}]/gu, ' ') // emoji
+    .replace(/^\s*(?:\d+[.)]|[-•*#])\s*/, '') // "1. ", "- ", "• "
+    .replace(/^(?:job title|position|role|vacancy)\s*:\s*/i, '')
+    .replace(/\s+/g, ' ').trim();
+  const split = splitTitleCompany(cleanTitle, (raw.company || '').replace(/\s+/g, ' ').trim());
   const title = split.title;
   if (!title || !raw.apply_url) return null;
   const company = split.company || null;
