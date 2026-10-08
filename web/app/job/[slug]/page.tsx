@@ -72,12 +72,12 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
             {job.city ? <><Link href={`/jobs?city=${encodeURIComponent(job.city)}`}>{job.city}</Link><span>/</span></> : job.work_mode === 'remote' ? <><Link href="/jobs/remote">Remote</Link><span>/</span></> : null}
             <span>{laneLabel(job.lane) || 'Other'}</span>
           </nav>
-          {job.expired_at && <div className="sticker" style={{ background: 'var(--soft)', borderRadius: 14, padding: '10px 14px', marginTop: 12 }}>This job left. Others didn&apos;t. <Link href="/jobs" style={{ textDecoration: 'underline' }}>See what&apos;s live</Link></div>}
+          {job.expired_at && <div className="notice err">This job left. Others didn&apos;t. <Link href="/jobs" style={{ textDecoration: 'underline' }}>See what&apos;s live</Link></div>}
           <div className="job-head">
             <Tile job={job} big />
             <div style={{ flex: '1 1 300px', minWidth: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
               <h1>{job.title}</h1>
-              <div className="muted" style={{ fontSize: 16, fontWeight: 500 }}>{locationLine(job)}</div>
+              <div className="muted" style={{ fontSize: 15.5, fontWeight: 500 }}>{locationLine(job)}</div>
               <div className="tags">
                 {levelLabel(job.level) && <span className="chip">{levelLabel(job.level)}</span>}
                 {laneLabel(job.lane) && <span className="chip">{laneLabel(job.lane)}</span>}
@@ -86,7 +86,7 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
               </div>
             </div>
             {dl && !job.expired_at && (
-              <div className="sticker deadline-sticker" aria-label={dl.text}>
+              <div className="deadline-sticker" aria-label={dl.text}>
                 <small>{dl.text.startsWith('Closes in') ? 'CLOSES IN' : 'CLOSES'}</small>
                 <b>{dl.text.startsWith('Closes in') ? dl.text.replace('Closes in ', '').replace(/ days?$/, '') : dl.text.replace('Closes ', '')}</b>
                 <small>{dl.text.startsWith('Closes in') ? (dl.text.endsWith('day') ? 'DAY LEFT' : 'DAYS LEFT') : new Date(job.deadline!).getFullYear()}</small>
@@ -96,12 +96,11 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
 
           {!job.expired_at && (
             <div className="apply-band">
-              <span className="sticker tag">still open</span>
               <div style={{ flex: '1 1 260px', minWidth: 0 }}>
                 <div className="big">{dl && dl.text.startsWith('Closes in') ? `Go apply. ${dl.text.replace('Closes in ', '')} left.` : 'Go apply. It’s still open.'}</div>
                 <div className="small">Seen live on {applyOn} {checked}.{job.deadline ? ` Closes ${new Date(job.deadline).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}.` : ''}</div>
               </div>
-              <a href={job.apply_url} target="_blank" rel="nofollow noopener" className="btn btn-butter" style={{ borderWidth: 3, minHeight: 48, fontSize: 15 }}>Apply on {applyOn} <ExtIcon /></a>
+              <a href={job.apply_url} target="_blank" rel="nofollow noopener" className="btn btn-ink" style={{ minHeight: 48, fontSize: 15, padding: '8px 22px' }}>Apply on {applyOn} <ExtIcon /></a>
             </div>
           )}
 
@@ -124,7 +123,7 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
             )}
           </section>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center', paddingTop: 16, marginTop: 16, borderTop: '2px solid var(--ink)', fontSize: 13, fontWeight: 600, color: 'var(--muted)' }}>
+          <div className="foot-note">
             <span>Nobody here charges a fee. Ever.</span>
             <Link href={`/report?job=${job.slug}`} style={{ textDecoration: 'underline' }}>Report this listing</Link>
             <a className="btn btn-sm" style={{ marginLeft: 'auto' }} href={`https://wa.me/?text=${encodeURIComponent(`${job.title}${job.company ? ' at ' + job.company : ''} ${SITE}/job/${job.slug}`)}`} target="_blank" rel="noopener">Share on WhatsApp</a>
@@ -142,7 +141,7 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
             <input id="se" name="email" type="email" placeholder="you@email.com" />
             <label htmlFor="sp" className="sr-only">Phone, optional</label>
             <input id="sp" name="phone" type="tel" placeholder="+234 phone (optional)" />
-            <label style={{ display: 'flex', gap: 8, fontSize: 13, alignItems: 'flex-start' }}><input type="checkbox" name="consent" value="yes" required style={{ marginTop: 3 }} /> Yes, send me matching jobs. I can stop anytime.</label>
+            <label className="consent"><input type="checkbox" name="consent" value="yes" required style={{ marginTop: 3 }} /> Yes, send me matching jobs. I can stop anytime.</label>
             <button type="submit" className="btn btn-ink">Send me jobs</button>
           </form>
           {similar.length > 0 && (

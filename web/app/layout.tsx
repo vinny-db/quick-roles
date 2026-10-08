@@ -1,11 +1,9 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
-import { Archivo_Black, Instrument_Serif, Bricolage_Grotesque } from 'next/font/google';
+import { Bricolage_Grotesque } from 'next/font/google';
 import './globals.css';
 
-const display = Archivo_Black({ weight: '400', subsets: ['latin'], variable: '--font-display', display: 'swap' });
-const script = Instrument_Serif({ weight: '400', style: 'italic', subsets: ['latin'], variable: '--font-script', display: 'swap' });
-const body = Bricolage_Grotesque({ weight: ['500', '600', '700'], subsets: ['latin'], variable: '--font-body', display: 'swap' });
+const body = Bricolage_Grotesque({ weight: ['500', '600', '700', '800'], subsets: ['latin'], variable: '--font-body', display: 'swap' });
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || 'https://quickroles.africa';
 
@@ -17,11 +15,11 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-export const viewport: Viewport = { themeColor: '#FFFCF5', width: 'device-width', initialScale: 1 };
+export const viewport: Viewport = { themeColor: '#FAF7F1', width: 'device-width', initialScale: 1 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`${display.variable} ${script.variable} ${body.variable}`}>
+    <html lang="en" className={body.variable}>
       <body>{children}</body>
     </html>
   );

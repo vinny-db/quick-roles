@@ -8,7 +8,7 @@ export default function MatchPage() {
   return (
     <div className="quiz">
       <Header />
-      <main className="wrap" style={{ maxWidth: 980 }}>
+      <main>
         <Quiz />
       </main>
       <Footer />

@@ -1,25 +1,88 @@
 'use client';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
+import { LANE_ICONS } from '@/components/JobCard';
+import { ArrowIcon } from '@/components/Chrome';
 
-const VIBE = [['remote', 'Remote, anywhere'], ['hybrid', 'Hybrid in my city'], ['onsite', 'On site, I like people']];
-const LEVEL = [['nysc', 'NYSC or fresh grad'], ['entry', 'Entry level'], ['mid', '3 to 6 years'], ['senior', '6+ years']];
-const LANE = [['sales', 'Sales'], ['support', 'Customer support'], ['finance', 'Finance'], ['tech', 'Tech'], ['design', 'Design'], ['marketing', 'Marketing'], ['ops', 'Operations'], ['ngo', 'NGO and development'], ['health', 'Health'], ['teaching', 'Teaching']];
-const PLACE = [['Lagos', 'Lagos'], ['Abuja', 'Abuja'], ['Port Harcourt', 'Port Harcourt'], ['Ibadan', 'Ibadan'], ['Kano', 'Kano'], ['any', 'Anywhere in Nigeria'], ['remote', 'Remote only']];
+type Key = 'mode' | 'level' | 'lane' | 'place';
+type Opt = { v: string; l: string; s?: string; icon?: ReactNode; tint?: string };
+type Step = { k: Key; title: string; sub: string; opts: Opt[]; grid: 'one' | 'two' };
 
-type Sel = { mode: string[]; level: string[]; lane: string[]; place: string[] };
+const S = { fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
+const I = {
+  remote: <svg viewBox="0 0 24 24" {...S}><path d="M4 17h16M6 17V7a2 2 0 012-2h8a2 2 0 012 2v10"/><path d="M9 21h6"/></svg>,
+  hybrid: <svg viewBox="0 0 24 24" {...S}><path d="M3 21h18M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/></svg>,
+  onsite: <svg viewBox="0 0 24 24" {...S}><path d="M3 21h18M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2"/></svg>,
+  nysc: <svg viewBox="0 0 24 24" {...S}><path d="M2 9l10-4 10 4-10 4z"/><path d="M6 11v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/></svg>,
+  entry: <svg viewBox="0 0 24 24" {...S}><path d="M4 20h16M6 20V10M12 20V4M18 20v-7"/></svg>,
+  mid: <svg viewBox="0 0 24 24" {...S}><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>,
+  senior: <svg viewBox="0 0 24 24" {...S}><path d="M12 3l2.4 6.2H21l-5.3 3.9 2 6.4L12 15.6l-5.7 3.9 2-6.4L3 9.2h6.6z"/></svg>,
+  pin: <svg viewBox="0 0 24 24" {...S}><path d="M12 22s7-6.2 7-12a7 7 0 10-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>,
+  globe: <svg viewBox="0 0 24 24" {...S}><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>,
+  flag: <svg viewBox="0 0 24 24" {...S}><path d="M5 21V4"/><path d="M5 4h12l-2 4 2 4H5"/></svg>,
+};
+
+const STEPS: Step[] = [
+  { k: 'mode', title: 'How do you want to work?', sub: 'Tap all that apply.', grid: 'one', opts: [
+    { v: 'remote', l: 'Remote', s: 'Work from anywhere', icon: I.remote, tint: 'var(--sky)' },
+    { v: 'hybrid', l: 'Hybrid', s: 'Some days in, some days home', icon: I.hybrid, tint: 'var(--lilac)' },
+    { v: 'onsite', l: 'On site', s: 'In the office, with people', icon: I.onsite, tint: 'var(--peach)' },
+  ] },
+  { k: 'level', title: 'Where are you at?', sub: 'Pick as many as fit.', grid: 'one', opts: [
+    { v: 'nysc', l: 'NYSC or fresh grad', s: 'Placements, internships, trainee programmes', icon: I.nysc, tint: 'var(--butter)' },
+    { v: 'entry', l: 'Entry level', s: 'Up to 2 years in', icon: I.entry, tint: 'var(--mint)' },
+    { v: 'mid', l: '3 to 6 years', s: 'You know what you are doing', icon: I.mid, tint: 'var(--sky)' },
+    { v: 'senior', l: '6+ years', s: 'Lead, manage, own it', icon: I.senior, tint: 'var(--lilac)' },
+  ] },
+  { k: 'lane', title: "What's your lane?", sub: 'Tap all that apply. Skip if you are open to anything.', grid: 'two', opts: [
+    { v: 'sales', l: 'Sales', icon: LANE_ICONS.sales, tint: 'var(--butter)' },
+    { v: 'support', l: 'Customer support', icon: LANE_ICONS.support, tint: 'var(--mint)' },
+    { v: 'finance', l: 'Finance', icon: LANE_ICONS.finance, tint: 'var(--mint)' },
+    { v: 'tech', l: 'Tech', icon: LANE_ICONS.tech, tint: 'var(--sky)' },
+    { v: 'design', l: 'Design', icon: LANE_ICONS.design, tint: 'var(--blush)' },
+    { v: 'marketing', l: 'Marketing', icon: LANE_ICONS.marketing, tint: 'var(--peach)' },
+    { v: 'ops', l: 'Operations', icon: LANE_ICONS.ops, tint: 'var(--lilac)' },
+    { v: 'ngo', l: 'NGO and development', icon: LANE_ICONS.ngo, tint: 'var(--sky)' },
+    { v: 'health', l: 'Health', icon: LANE_ICONS.health, tint: 'var(--blush)' },
+    { v: 'teaching', l: 'Teaching', icon: LANE_ICONS.teaching, tint: 'var(--lilac)' },
+  ] },
+  { k: 'place', title: 'Where should it be?', sub: 'Remote roles that take Nigeria come along whatever you pick.', grid: 'two', opts: [
+    { v: 'Lagos', l: 'Lagos', icon: I.pin, tint: 'var(--butter)' },
+    { v: 'Abuja', l: 'Abuja', icon: I.pin, tint: 'var(--mint)' },
+    { v: 'Port Harcourt', l: 'Port Harcourt', icon: I.pin, tint: 'var(--sky)' },
+    { v: 'Ibadan', l: 'Ibadan', icon: I.pin, tint: 'var(--peach)' },
+    { v: 'Kano', l: 'Kano', icon: I.pin, tint: 'var(--lilac)' },
+    { v: 'any', l: 'Anywhere in Nigeria', icon: I.flag, tint: 'var(--mint)' },
+    { v: 'remote', l: 'Remote only', icon: I.globe, tint: 'var(--sky)' },
+  ] },
+];
+
+type Sel = Record<Key, string[]>;
+const EMPTY: Sel = { mode: [], level: [], lane: [], place: [] };
+
+const Check = () => <span className="ck" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>;
 
 export function Quiz() {
   const router = useRouter();
-  const [sel, setSel] = useState<Sel>({ mode: [], level: [], lane: [], place: [] });
-  const toggle = (k: keyof Sel, v: string) => setSel((s) => ({ ...s, [k]: s[k].includes(v) ? s[k].filter((x) => x !== v) : [...s[k], v] }));
-  const total = sel.mode.length + sel.level.length + sel.lane.length + sel.place.length;
-  const answered = (['mode', 'level', 'lane', 'place'] as const).filter((k) => sel[k].length).length;
+  const [i, setI] = useState(0); // 0..3 questions, 4 = summary
+  const [sel, setSel] = useState<Sel>(EMPTY);
+  const step = STEPS[i];
+  const total = STEPS.length;
+  const picks = sel.mode.length + sel.level.length + sel.lane.length + sel.place.length;
+
+  const toggle = (k: Key, v: string) => setSel((s) => {
+    let next = s[k].includes(v) ? s[k].filter((x) => x !== v) : [...s[k], v];
+    if (k === 'place' && v === 'remote' && next.includes('remote')) next = ['remote'];
+    if (k === 'place' && v !== 'remote') next = next.filter((x) => x !== 'remote');
+    if (k === 'place' && v === 'any' && next.includes('any')) next = ['any'];
+    if (k === 'place' && v !== 'any') next = next.filter((x) => x !== 'any');
+    return { ...s, [k]: next };
+  });
+
   const href = useMemo(() => {
     const p = new URLSearchParams();
     p.set('match', '1');
-    const mode = [...sel.mode];
-    if (sel.place.includes('remote') && !mode.includes('remote')) mode.push('remote');
+    const mode = sel.place.includes('remote') ? ['remote'] : [...sel.mode];
     if (mode.length) p.set('mode', mode.join(','));
     if (sel.level.length) p.set('level', sel.level.join(','));
     if (sel.lane.length) p.set('lane', sel.lane.join(','));
@@ -28,37 +91,73 @@ export function Quiz() {
     return `/jobs?${p.toString()}`;
   }, [sel]);
 
-  const Q = ({ title, k, opts, shadow, note }: { title: string; k: keyof Sel; opts: string[][]; shadow: string; note?: string }) => (
-    <div className="qcard" style={{ boxShadow: `5px 5px 0 ${shadow}` }}>
-      <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 8 }}>
-        <h2>{title}</h2>
-        <span className="muted" style={{ fontSize: 12, fontWeight: 700 }}>{sel[k].length ? `${sel[k].length} picked` : 'pick any'}</span>
-      </div>
-      <div className="qopts" role="group" aria-label={title}>
-        {opts.map(([v, l]) => <button key={v} type="button" className={`qopt${sel[k].includes(v) ? ' on' : ''}`} aria-pressed={sel[k].includes(v)} onClick={() => toggle(k, v)}>{l}</button>)}
-      </div>
-      {note && <p className="muted" style={{ margin: 0, fontSize: 12 }}>{note}</p>}
-    </div>
-  );
+  const go = () => router.push(href);
+  const next = () => (i < total - 1 ? setI(i + 1) : setI(total));
+  const back = () => setI(Math.max(0, i - 1));
+  const label = (k: Key, v: string) => STEPS.find((s) => s.k === k)!.opts.find((o) => o.v === v)?.l || v;
 
   return (
-    <section style={{ display: 'flex', flexDirection: 'column', gap: 16, paddingTop: 10 }}>
-      <div style={{ position: 'relative', paddingTop: 14 }}>
-        <span className="sticker" style={{ position: 'absolute', right: 0, top: -4, transform: 'rotate(7deg)', background: 'var(--mint)', borderRadius: 999, padding: '7px 14px', fontSize: 13 }}>30 seconds, tops</span>
-        <h1 style={{ fontSize: 'clamp(32px, 5vw, 48px)', letterSpacing: '-2px', lineHeight: 0.95 }}>Tap what fits.<br />Pick as many as you <span className="script" style={{ color: 'var(--butter)', textShadow: '3px 3px 0 var(--ink)', fontSize: '1.15em' }}>like.</span></h1>
-        <p className="muted" style={{ margin: 0, paddingTop: 8, fontSize: 16 }}>No CV, no account. Change anything later.</p>
+    <div className="qwrap">
+      <div className="qtop">
+        <button type="button" className="icon-btn" onClick={back} disabled={i === 0} aria-label="Back" style={i === 0 ? { opacity: .35 } : undefined}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        </button>
+        <div className="qbar-prog" role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={Math.min(i + 1, total)}><i style={{ width: `${(Math.min(i + 1, total) / total) * 100}%` }} /></div>
+        <span className="qstep">{i < total ? `${i + 1} / ${total}` : 'Done'}</span>
       </div>
-      <div className="qgrid">
-        <Q title="Work vibe" k="mode" opts={VIBE} shadow="var(--butter)" />
-        <Q title="Where you're at" k="level" opts={LEVEL} shadow="var(--blush)" />
-        <Q title="Your lanes" k="lane" opts={LANE} shadow="var(--mint)" />
-        <Q title="Where it should be" k="place" opts={PLACE} shadow="var(--butter)" note="Remote roles that accept Nigeria come along whatever you pick." />
+
+      {i < total ? (
+        <div className="qq" key={step.k}>
+          <h1>{step.title}</h1>
+          <p className="qsub">{step.sub}</p>
+          <div className={`qgrid ${step.grid}`} role="group" aria-label={step.title}>
+            {step.opts.map((o) => {
+              const on = sel[step.k].includes(o.v);
+              return (
+                <button key={o.v} type="button" className={`qtile${step.grid === 'one' ? ' row' : ''}${on ? ' on' : ''}`} aria-pressed={on} onClick={() => toggle(step.k, o.v)}>
+                  {o.icon && <span className="ic" style={{ background: on ? undefined : o.tint }}>{o.icon}</span>}
+                  <span>{o.l}{o.s && <small>{o.s}</small>}</span>
+                  <Check />
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ) : (
+        <div className="qq" key="summary">
+          <h1>Your picks.</h1>
+          <p className="qsub">{picks ? 'Tap edit to change anything.' : 'Nothing picked, so you get everything, newest first.'}</p>
+          {STEPS.map((s, idx) => (
+            <div className="qsum" key={s.k}>
+              <div style={{ minWidth: 0 }}>
+                <b>{s.title}</b>
+                <div className="vals">{sel[s.k].length ? sel[s.k].map((v) => <span key={v} className="chip chip-mint">{label(s.k, v)}</span>) : <span className="chip">Any</span>}</div>
+              </div>
+              <button type="button" className="edit" onClick={() => setI(idx)}>Edit</button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="qactions">
+        <div>
+          {i < total ? (
+            <>
+              {sel[step.k].length ? (
+                <button type="button" className="btn btn-ghost" onClick={() => setSel((s) => ({ ...s, [step.k]: [] }))}>Clear</button>
+              ) : (
+                <button type="button" className="btn btn-ghost" onClick={next}>Skip</button>
+              )}
+              <button type="button" className="btn btn-ink" onClick={next}>{i === total - 1 ? 'Review' : 'Next'} <ArrowIcon size={16} /></button>
+            </>
+          ) : (
+            <>
+              <button type="button" className="btn btn-ghost" onClick={() => { setSel(EMPTY); setI(0); }}>Start over</button>
+              <button type="button" className="btn btn-ink" onClick={go}>Show my matches <ArrowIcon size={16} /></button>
+            </>
+          )}
+        </div>
       </div>
-      <div className="qbar">
-        <span style={{ flex: '1 1 auto', fontSize: 14, fontWeight: 600 }}>{total === 0 ? 'Tap anything to start. Skip what you don’t care about.' : `${answered} of 4 answered · ${total} pick${total === 1 ? '' : 's'}`}</span>
-        <button type="button" className="btn btn-ghost btn-sm" onClick={() => setSel({ mode: [], level: [], lane: [], place: [] })}>Clear</button>
-        <button type="button" className="btn btn-ink" disabled={total === 0} style={total === 0 ? { background: '#EDEAE3', color: '#8A8A82', borderColor: '#EDEAE3', cursor: 'default' } : undefined} onClick={() => router.push(href)}>Show my matches</button>
-      </div>
-    </section>
+    </div>
   );
 }

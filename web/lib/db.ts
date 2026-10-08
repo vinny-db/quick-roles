@@ -32,6 +32,29 @@ async function rest<T>(path: string, opts: { method?: string; body?: string; hea
 
 const esc = (s: string) => s.replace(/[,.()"'\\*]/g, ' ').replace(/\s+/g, ' ').trim();
 
+const PLACES = ['remote', 'hybrid', 'work from home', 'lagos', 'abuja', 'port harcourt', 'ibadan', 'kano', 'kaduna', 'enugu', 'benin', 'calabar', 'uyo', 'jos', 'owerri', 'abeokuta', 'ilorin', 'onitsha', 'warri', 'asaba', 'akure', 'maiduguri', 'yola', 'bauchi', 'sokoto', 'minna', 'lokoja', 'makurdi', 'ikeja', 'lekki', 'yaba', 'victoria island', 'ogun', 'rivers', 'delta', 'nigeria', 'ghana', 'kenya', 'accra', 'nairobi'];
+
+// "accountant, Lagos" or "remote design" or "nurse in Abuja" -> { q: 'accountant', loc: 'Lagos' }
+export function parseSearch(raw: string): { q?: string; loc?: string } {
+  const text = raw.replace(/\s+/g, ' ').trim().slice(0, 100);
+  if (!text) return {};
+  const lower = text.toLowerCase();
+  if (text.includes(',')) {
+    const parts = text.split(',').map((p) => p.trim()).filter(Boolean);
+    const loc = parts.find((p) => PLACES.includes(p.toLowerCase().replace(/^in /, '')));
+    const q = parts.filter((p) => p !== loc).join(' ').trim();
+    return { q: q || undefined, loc: loc?.replace(/^in /i, '') };
+  }
+  for (const place of PLACES) {
+    const re = new RegExp(`(^|\\s)(in\\s+)?${place.replace(' ', '\\s+')}(\\s|$)`, 'i');
+    if (re.test(lower)) {
+      const q = text.replace(re, ' ').replace(/\s+/g, ' ').trim();
+      return { q: q || undefined, loc: place === 'work from home' ? 'remote' : text.match(new RegExp(place, 'i'))![0] };
+    }
+  }
+  return { q: text };
+}
+
 export type JobQuery = {
   q?: string; loc?: string; mode?: string[]; level?: string[]; lane?: string[]; city?: string[]; salary?: boolean; posted?: 'today' | '3d' | '7d';
   page?: number; sort?: 'newest' | 'deadline' | 'salary'; excludeSources?: string[]; match?: boolean; limit?: number;
