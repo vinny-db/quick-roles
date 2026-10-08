@@ -52,13 +52,17 @@ export async function listJobs(qy: JobQuery): Promise<{ jobs: Job[]; total: numb
     if (l.includes('remote')) p.set('work_mode', 'eq.remote');
     else p.append('or', `(city.ilike.*${l}*,location_text.ilike.*${l}*)`);
   }
-  if (qy.mode?.length) p.set('work_mode', `in.(${qy.mode.join(',')})`);
   if (qy.level?.length) p.set('level', `in.(${qy.level.join(',')})`);
   if (qy.lane?.length) p.set('lane', `in.(${qy.lane.join(',')})`);
   if (qy.city?.length) {
-    // city picks OR remote-anywhere, so remote jobs that take Nigeria always come along
-    const cities = qy.city.map((c) => `city.eq.${esc(c)}`).join(',');
-    p.append('or', `(${cities},work_mode.eq.remote)`);
+    // Jobs in the picked cities (in the picked non-remote modes, if any) OR remote jobs. Remote roles that
+    // take Nigeria always come along, so "Remote" + "Lagos" means remote plus Lagos, not remote only.
+    const cities = `city.in.(${qy.city.map((c) => `"${esc(c)}"`).join(',')})`;
+    const local = (qy.mode || []).filter((m) => m !== 'remote');
+    const localClause = local.length ? `and(${cities},work_mode.in.(${local.join(',')}))` : cities;
+    p.append('or', `(${localClause},work_mode.eq.remote)`);
+  } else if (qy.mode?.length) {
+    p.set('work_mode', `in.(${qy.mode.join(',')})`);
   }
   if (qy.salary) p.set('salary_min', 'not.is.null');
   if (qy.posted) {

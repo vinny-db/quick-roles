@@ -99,7 +99,7 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
               <span className="sticker tag">still open</span>
               <div style={{ flex: '1 1 260px', minWidth: 0 }}>
                 <div className="big">{dl && dl.text.startsWith('Closes in') ? `Go apply. ${dl.text.replace('Closes in ', '')} left.` : 'Go apply. It’s still open.'}</div>
-                <div className="small">Checked {checked} on {applyOn}&apos;s site.{job.deadline ? ` Closes ${new Date(job.deadline).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}.` : ''}</div>
+                <div className="small">Seen live on {applyOn} {checked}.{job.deadline ? ` Closes ${new Date(job.deadline).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}.` : ''}</div>
               </div>
               <a href={job.apply_url} target="_blank" rel="nofollow noopener" className="btn btn-butter" style={{ borderWidth: 3, minHeight: 48, fontSize: 15 }}>Apply on {applyOn} <ExtIcon /></a>
             </div>

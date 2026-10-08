@@ -9,8 +9,8 @@ const NG_CITIES = ['lagos', 'abuja', 'port harcourt', 'ibadan', 'kano', 'kaduna'
 const AFRICA_HINTS = ['nigeria', 'africa', 'ghana', 'kenya', 'south africa', 'egypt', 'rwanda', 'uganda', 'tanzania', 'senegal', "cote d'ivoire", 'ivory coast', 'cameroon', 'ethiopia'];
 const WORLDWIDE_HINTS = ['worldwide', 'anywhere', 'global', 'international', 'remote - any', 'any location', 'fully remote', 'work from anywhere'];
 const EMEA_HINTS = ['emea', 'europe, middle east', 'europe/africa', 'africa/europe', 'utc', 'gmt'];
-const NON_AFRICA = ['united states', 'usa', 'u.s.', 'new york', 'san francisco', 'california', 'texas', 'canada', 'toronto', 'united kingdom', 'london', 'england', 'germany', 'berlin', 'france', 'paris', 'netherlands', 'amsterdam', 'spain', 'portugal', 'italy', 'poland', 'ireland', 'dublin', 'india', 'bangalore', 'bengaluru', 'mumbai', 'pakistan', 'philippines', 'singapore', 'australia', 'sydney', 'brazil', 'mexico', 'argentina', 'dubai', 'uae', 'saudi', 'qatar', 'israel', 'turkey', 'japan', 'china', 'hong kong', 'sweden', 'norway', 'denmark', 'finland', 'switzerland', 'austria', 'belgium', 'czech', 'romania', 'ukraine', 'vietnam', 'indonesia', 'malaysia', 'thailand', 'new zealand'];
-const NON_AFRICA_RE = /\b(uk|u\.k\.|usa|u\.s\.a?\.?|us|eu|apac|latam|emea only|north america|south america|oceania|canada|australia)\b/i;
+const NON_AFRICA = ['united states', 'usa', 'u.s.', 'new york', 'san francisco', 'california', 'texas', 'chicago', 'boston', 'seattle', 'los angeles', 'miami', 'denver', 'atlanta', 'canada', 'toronto', 'vancouver', 'montreal', 'united kingdom', 'london', 'england', 'scotland', 'manchester', 'germany', 'berlin', 'munich', 'france', 'paris', 'netherlands', 'amsterdam', 'spain', 'madrid', 'barcelona', 'portugal', 'lisbon', 'italy', 'milan', 'poland', 'warsaw', 'ireland', 'dublin', 'india', 'bangalore', 'bengaluru', 'mumbai', 'delhi', 'hyderabad', 'chennai', 'pune', 'pakistan', 'karachi', 'lahore', 'bangladesh', 'sri lanka', 'nepal', 'philippines', 'manila', 'singapore', 'australia', 'sydney', 'melbourne', 'brazil', 'mexico', 'argentina', 'colombia', 'chile', 'peru', 'costa rica', 'dubai', 'abu dhabi', 'uae', 'saudi', 'riyadh', 'qatar', 'doha', 'israel', 'tel aviv', 'turkey', 'japan', 'tokyo', 'korea', 'seoul', 'china', 'shanghai', 'beijing', 'taiwan', 'hong kong', 'sweden', 'norway', 'denmark', 'finland', 'iceland', 'switzerland', 'austria', 'belgium', 'luxembourg', 'czech', 'hungary', 'romania', 'bulgaria', 'greece', 'serbia', 'croatia', 'slovakia', 'slovenia', 'lithuania', 'latvia', 'estonia', 'ukraine', 'kazakhstan', 'uzbekistan', 'armenia', 'azerbaijan', 'cyprus', 'malta', 'vietnam', 'hanoi', 'indonesia', 'jakarta', 'malaysia', 'kuala lumpur', 'thailand', 'bangkok', 'new zealand', 'auckland', 'dach', 'nordics', 'benelux', 'balkans', 'baltics', 'middle east'];
+const NON_AFRICA_RE = /\b(uk|u\.k\.|usa|u\.s\.a?\.?|us|eu|cee|apac|latam|emea only|north america|south america|oceania|canada|australia|gulf)\b/i;
 const EXCLUDE_REMOTE = [/\bus only\b/, /\busa only\b/, /united states only/, /\bus[- ]based\b/, /\bcanada only\b/, /\beu only\b/, /\buk only\b/, /\bus\/canada\b/, /\bnorth america\b/, /\blatam\b/, /\bapac\b/, /\baustralia\b/];
 
 export function detectCity(text = '') {
@@ -52,39 +52,58 @@ export function detectRemoteScope(locationText = '') {
   return 'unknown';
 }
 
+// Title rules: the title is the strongest signal we have.
 const LEVEL_RULES = [
   ['nysc', 0.95, /\bnysc\b|corps member|corper|\bsiwes\b|\bit student\b|industrial training/],
   ['nysc', 0.9, /\bintern(ship)?\b|graduate trainee|management trainee|\btrainee\b|fresh graduate|entry[- ]level graduate/],
-  ['senior', 0.9, /\bsenior\b|\blead\b|\bhead of\b|\bprincipal\b|\bdirector\b|\bchief\b|\bvp\b|vice president|\bmanager\b/],
-  ['entry', 0.8, /\bjunior\b|\bentry[- ]level\b|\bassociate\b|\bassistant\b|\bofficer\b|\bgraduate\b|0-2 years|0 - 2 years|1-2 years/],
-  ['mid', 0.6, /\bmid[- ]level\b|\bspecialist\b|\banalyst\b|\bexecutive\b|\bcoordinator\b|\bconsultant\b|3-5 years|3 - 5 years|2-4 years|\bii\b|\biii\b/],
+  ['senior', 0.9, /\bsenior\b|\bsr\.?\b|\blead\b|\bhead of\b|\bhead,\b|\bprincipal\b|\bdirector\b|\bchief\b|\bvp\b|vice president|\bstaff\b|\barchitect\b/],
+  ['entry', 0.8, /\bjunior\b|\bjr\.?\b|\bentry[- ]level\b|\bassociate\b|\bassistant\b|\bofficer\b|\bgraduate\b|\bapprentice/],
+  ['mid', 0.6, /\bmid[- ]level\b|\bmanager\b|\bspecialist\b|\banalyst\b|\bexecutive\b|\bcoordinator\b|\bconsultant\b|\bsupervisor\b|\bii\b|\biii\b/],
 ];
+// Body rules: only the markers that are rarely boilerplate. Years of experience is the main one.
+const BODY_NYSC = /\bnysc\b|corps member|corper|\bsiwes\b/;
+const YEARS_RE = /(?:minimum|at least|min\.?|over)?\s*(\d{1,2})\s*(?:\+|-\s*\d{1,2}|to\s*\d{1,2}|or more)?\s*\+?\s*(?:years?|yrs?)(?:'|’)?\s*(?:of\s+)?(?:\w+\s+){0,3}experience/;
+
 const LANE_RULES = [
-  ['tech', /\bsoftware\b|\bdeveloper\b|\bengineer(ing)?\b|\bdevops\b|\bdata (scientist|analyst|engineer)\b|\bqa\b|\bfrontend\b|\bbackend\b|\bfull[- ]?stack\b|\bmobile\b|\bandroid\b|\bios\b|\bproduct manager\b|\bit support\b|\bcyber|\bcloud\b|\bml\b|machine learning/],
+  ['tech', /\bsoftware\b|\bdeveloper\b|\bengineer(ing)?\b|\bdevops\b|\bdata (scientist|analyst|engineer)\b|\bqa\b|\btester\b|\bfrontend\b|\bbackend\b|\bfull[- ]?stack\b|\bmobile\b|\bandroid\b|\bios\b|\bproduct manager\b|\bit support\b|\bcyber|\bcloud\b|\bml\b|machine learning|\bsre\b|\bdatabase\b|\bnetwork (engineer|admin)/],
   ['design', /\bdesigner\b|\bux\b|\bui\b|\bproduct design\b|\bgraphic\b|\bbrand design|\bmotion\b|\billustrat/],
   ['finance', /\baccount(ant|ing)\b|\bfinanc|\btreasury\b|\baudit\b|\btax\b|\bbookkeep|\bcredit\b|\brisk\b|\bactuar|\bpayroll\b|\binvestment\b|\bfp&a\b/],
   ['sales', /\bsales\b|\bbusiness development\b|\bbdm\b|\baccount manager\b|\baccount executive\b|\brelationship manager\b|\btelesales\b|\bmerchandis/],
-  ['support', /\bcustomer (support|success|service|care|experience)\b|\bsupport (specialist|agent|associate|representative)\b|\bcall cent(er|re)\b|\bhelp ?desk\b|\bvirtual assistant\b/],
+  ['support', /\bcustomer (support|success|service|care|experience)\b|\bsupport (specialist|agent|associate|representative)\b|\bcall cent(er|re)\b|\bhelp ?desk\b|\bvirtual assistant\b|\bclient service\b/],
   ['marketing', /\bmarketing\b|\bcontent\b|\bsocial media\b|\bcommunity manager\b|\bseo\b|\bgrowth\b|\bbrand manager\b|\bpr\b|\bcommunications\b|\bcopywriter\b/],
   ['health', /\bnurse\b|\bnursing\b|\bdoctor\b|\bmedical\b|\bclinic|\bpharmac|\bhealth\b|\bphysician\b|\blaborator|\bmidwife\b|\bdental\b/],
-  ['teaching', /\bteacher\b|\bteaching\b|\btutor\b|\blecturer\b|\bprofessor\b|\binstructor\b|\bschool\b|\bacademic\b|\beducation\b/],
+  ['teaching', /\bteacher\b|\bteaching\b|\btutor\b|\blecturer\b|\bprofessor\b|\bfaculty\b|\binstructor\b|\bschool\b|\bacademic\b|\beducation\b/],
   ['ngo', /\bngo\b|\bhumanitarian\b|\bprogramme? (officer|manager|assistant)\b|\bmonitoring and evaluation\b|\bm&e\b|\bwash\b|\blivelihood|\bprotection officer\b|\bfield officer\b|\bdevelopment (officer|associate)\b|\bgrants?\b|\bunicef\b|\bundp\b/],
-  ['ops', /\boperations?\b|\blogistics\b|\bsupply chain\b|\bprocurement\b|\badmin(istrat)?\b|\bhr\b|\bhuman resources?\b|\brecruit|\boffice manager\b|\bproject manager\b|\bdriver\b|\bwarehouse\b|\bfacilit|\bsecurity\b|\breceptionist\b/],
+  ['ops', /\boperations?\b|\blogistics\b|\bsupply chain\b|\bprocurement\b|\badmin(istrat(or|ive|ion))?\b|\bhr\b|\bhuman resources?\b|\brecruit|\boffice (manager|assistant)\b|\bproject manager\b|\bdriver\b|\bwarehouse\b|\bfacilit|\bsecurity\b|\breceptionist\b|\bdata entry\b|\bclerk\b/],
 ];
 
 export function classifyLevel(title = '', body = '') {
   const t = title.toLowerCase();
   for (const [level, conf, re] of LEVEL_RULES) if (re.test(t)) return { level, confidence: conf };
-  const b = body.toLowerCase().slice(0, 4000);
-  for (const [level, conf, re] of LEVEL_RULES) if (re.test(b)) return { level, confidence: Math.min(0.5, conf) };
+  const b = body.toLowerCase().slice(0, 6000);
+  if (BODY_NYSC.test(b)) return { level: 'nysc', confidence: 0.5 };
+  const m = b.match(YEARS_RE);
+  if (m) {
+    const y = Number(m[1]);
+    if (y <= 1) return { level: 'entry', confidence: 0.5 };
+    if (y <= 4) return { level: 'mid', confidence: 0.5 };
+    return { level: 'senior', confidence: 0.5 };
+  }
+  if (/\bfresh graduates?\b|\bno experience\b|\bgraduate trainee\b/.test(b)) return { level: 'entry', confidence: 0.4 };
   return { level: 'unknown', confidence: 0 };
 }
 
 export function classifyLane(title = '', body = '') {
   const t = title.toLowerCase();
   for (const [lane, re] of LANE_RULES) if (re.test(t)) return { lane, confidence: 0.85 };
+  // Body: count hits per lane and take a clear winner. One stray word is not enough.
   const b = body.toLowerCase().slice(0, 4000);
-  for (const [lane, re] of LANE_RULES) if (re.test(b)) return { lane, confidence: 0.45 };
+  let best = null;
+  for (const [lane, re] of LANE_RULES) {
+    const hits = (b.match(new RegExp(re.source, 'g')) || []).length;
+    if (hits >= 2 && (!best || hits > best.hits)) best = { lane, hits };
+  }
+  if (best) return { lane: best.lane, confidence: 0.45 };
   return { lane: 'other', confidence: 0 };
 }
 
@@ -143,6 +162,10 @@ export function normalize(raw, source) {
   if (work_mode === 'remote') {
     remote_scope = detectRemoteScope(raw.remote_scope_text || locationText || 'unknown');
     if (remote_scope === null) return null; // clearly excludes Nigeria
+    // "Account Executive (Kazakhstan)", "Sales Manager - DACH": the title names a region that is not ours.
+    const titleScope = detectRemoteScope(title);
+    if (titleScope === null) return null;
+    if (titleScope !== 'unknown' && remote_scope === 'unknown') remote_scope = titleScope;
     if (raw.remote_scope) remote_scope = raw.remote_scope;
   }
   const city = detectCity(locationText) || (work_mode === 'remote' ? null : detectCity(bodyText.slice(0, 500)));

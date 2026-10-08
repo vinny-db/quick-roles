@@ -19,5 +19,5 @@ Version 1 (MVP) in progress. See `docs/` for the product spec and decisions log.
 
 - `pipeline/` ingestion (zero dependencies, runs on GitHub Actions hourly)
 - `supabase/schema.sql` database
-- `web/` the site (Next.js 15). On Vercel set the root directory to `web`
+- `web/` the site (Next.js 16). On Vercel set the root directory to `web`
 - `docs/` source register, design decisions, v1 spec
