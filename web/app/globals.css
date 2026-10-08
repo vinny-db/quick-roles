@@ -145,6 +145,8 @@ img { max-width: 100%; }
 .band .form { flex: 1 1 360px; display: flex; flex-direction: column; gap: 10px; }
 .band .row { display: flex; flex-wrap: wrap; gap: 8px; }
 .band input, .side-box input { flex: 1 1 170px; border: 1px solid var(--line); background: var(--well); border-radius: 12px; padding: 11px 14px; font-size: 14px; min-height: 46px; min-width: 0; }
+.side-box input { flex: none; width: 100%; }
+.band input[type=checkbox], .side-box input[type=checkbox], .form input[type=checkbox] { flex: none; width: 16px; height: 16px; min-height: 0; padding: 0; margin: 0; accent-color: var(--ink); }
 .band input:focus, .side-box input:focus, .form input:focus, .form textarea:focus, .form select:focus { outline: 2px solid var(--ink); outline-offset: 0; background: #fff; }
 .band .hint { font-size: 12px; color: var(--muted); }
 .band label.consent, .side-box label.consent { display: flex; gap: 8px; font-size: 13px; color: var(--muted); align-items: flex-start; }
@@ -241,7 +243,7 @@ img { max-width: 100%; }
 .qtile.on .ck { display: flex; }
 .qtile.row { min-height: 58px; flex-direction: row; align-items: center; justify-content: flex-start; }
 .qactions { position: fixed; left: 0; right: 0; bottom: 70px; padding: 10px 20px 0; pointer-events: none; z-index: 15; }
-.qactions > div { max-width: 520px; margin: 0 auto; display: flex; gap: 10px; align-items: center; pointer-events: auto; background: rgba(250, 247, 241, .9); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 999px; padding: 6px; box-shadow: var(--shadow-float); border: 1px solid var(--line); }
+.qactions > div { max-width: 520px; margin: 0 auto; display: flex; gap: 10px; align-items: center; pointer-events: auto; background: rgba(255, 255, 255, .96); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 999px; padding: 6px; box-shadow: var(--shadow-float); border: 1px solid var(--line); }
 .qactions .btn-ink { flex: 1; min-height: 50px; font-size: 15px; }
 @media (min-width: 761px) { .qactions { bottom: 20px; } }
 .qsum { background: var(--surface); border-radius: 18px; padding: 16px; box-shadow: var(--shadow-card); margin-bottom: 10px; display: flex; gap: 12px; align-items: flex-start; border: 1px solid rgba(20, 20, 10, 0.04); }

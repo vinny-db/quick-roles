@@ -61,3 +61,12 @@ export function logoFor(j: { logo_url?: string | null; employer_domain?: string 
   if (j.employer_domain) return `/api/logo?d=${encodeURIComponent(j.employer_domain)}`;
   return null;
 }
+
+const ENT: Record<string, string> = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ', rsquo: '\u2019', lsquo: '\u2018', rdquo: '\u201D', ldquo: '\u201C', ndash: '\u2013', mdash: '\u2014', hellip: '\u2026', bull: '\u2022', middot: '\u00B7' };
+export function plain(s: string | null | undefined): string {
+  if (!s) return '';
+  return s.replace(/&(#x?[0-9a-f]+|[a-z]+);/gi, (m, e) => {
+    if (e[0] === '#') { const n = e[1].toLowerCase() === 'x' ? parseInt(e.slice(2), 16) : parseInt(e.slice(1), 10); return Number.isFinite(n) ? String.fromCodePoint(n) : m; }
+    return ENT[e.toLowerCase()] ?? m;
+  });
+}

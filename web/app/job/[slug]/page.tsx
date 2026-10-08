@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { Header, Footer, BottomNav, ExtIcon } from '@/components/Chrome';
 import { Tile } from '@/components/JobCard';
 import { getJob, similarJobs } from '@/lib/db';
-import { timeAgo, deadlineLabel, levelLabel, laneLabel, modeLabel, salaryLabel, locationLine } from '@/lib/format';
+import { timeAgo, deadlineLabel, levelLabel, laneLabel, modeLabel, salaryLabel, locationLine, plain } from '@/lib/format';
 
 export const revalidate = 600;
 
@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const where = job.work_mode === 'remote' ? modeLabel('remote', job.remote_scope) : job.city || job.location_text || 'Nigeria';
   return {
     title: `${job.title}${job.company ? ` at ${job.company}` : ''}, ${where}`,
-    description: job.summary || `${job.title} at ${job.company || 'an employer'}. Found on Quick Roles, checked hourly.`,
+    description: plain(job.summary) || `${job.title} at ${job.company || 'an employer'}. Found on Quick Roles, checked hourly.`,
     robots: job.expired_at ? { index: false } : undefined,
     alternates: { canonical: `${SITE}/job/${job.slug}` },
   };
@@ -117,7 +117,7 @@ export default async function JobPage({ params }: { params: Promise<{ slug: stri
               <div dangerouslySetInnerHTML={{ __html: sanitize(job.description_html) }} />
             ) : (
               <>
-                <p>{job.summary}</p>
+                <p>{plain(job.summary)}</p>
                 <p className="muted" style={{ fontSize: 14 }}>The full description lives on {applyOn}&apos;s site. We show the facts and send you straight there.</p>
               </>
             )}

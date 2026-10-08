@@ -1,6 +1,8 @@
 // Tiny RSS/Atom reader. Handles the feeds we use without a dependency.
 // Not a general XML parser: it extracts <item> or <entry> blocks and simple child fields.
 
+const NAMED = { rsquo: '\u2019', lsquo: '\u2018', rdquo: '\u201D', ldquo: '\u201C', ndash: '\u2013', mdash: '\u2014', hellip: '\u2026', bull: '\u2022', middot: '\u00B7', copy: '\u00A9', reg: '\u00AE', trade: '\u2122', deg: '\u00B0', times: '\u00D7', euro: '\u20AC', pound: '\u00A3', naira: '\u20A6' };
+
 export function decodeEntities(s = '') {
   return s
     .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1')
@@ -9,6 +11,7 @@ export function decodeEntities(s = '') {
     .replace(/&quot;/g, '"')
     .replace(/&#39;|&apos;/g, "'")
     .replace(/&nbsp;/g, ' ')
+    .replace(/&(rsquo|lsquo|rdquo|ldquo|ndash|mdash|hellip|bull|middot|copy|reg|trade|deg|times|euro|pound|naira);/g, (_, e) => NAMED[e] || '')
     .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
     .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCodePoint(parseInt(n, 16)))
     .replace(/&amp;/g, '&');

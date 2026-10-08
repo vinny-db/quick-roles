@@ -1,6 +1,6 @@
 // Turns a raw adapter job into a row for the jobs table.
 import { createHash } from 'node:crypto';
-import { stripTags } from './xml.js';
+import { stripTags, decodeEntities } from './xml.js';
 
 export const slugify = (s = '') =>
   s.toLowerCase().normalize('NFKD').replace(/[^\w\s-]/g, '').trim().replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
@@ -117,7 +117,7 @@ export function parseSalary(text = '') {
 }
 
 export function summarize(text = '', max = 200) {
-  const clean = stripTags(text).replace(/\s+/g, ' ').trim();
+  const clean = decodeEntities(stripTags(text)).replace(/\s+/g, ' ').trim();
   if (clean.length <= max) return clean;
   const cut = clean.slice(0, max);
   const i = cut.lastIndexOf(' ');
