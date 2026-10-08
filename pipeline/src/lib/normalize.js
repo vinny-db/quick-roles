@@ -47,6 +47,7 @@ export function detectRemoteScope(locationText = '') {
   if (AFRICA_HINTS.some((h) => t.includes(h))) return 'africa';
   if (WORLDWIDE_HINTS.some((h) => t.includes(h))) return 'worldwide';
   if (EMEA_HINTS.some((h) => t.includes(h))) return 'emea';
+  if (NON_AFRICA.some((h) => t.includes(h))) return null; // region-locked elsewhere
   return 'unknown';
 }
 
@@ -107,6 +108,16 @@ function titleCase(s) {
   return s.replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
+// "Finance Analyst Job at Paystack" -> { title: 'Finance Analyst', company: 'Paystack' }
+export function splitTitleCompany(title = '', company = '') {
+  const m = title.match(/^(.+?)\s+at\s+([A-Z0-9][^|]{1,60}?)\s*(?:\(|$)/);
+  if (!m) return { title: title.trim(), company: company || '' };
+  const tail = m[2].trim().replace(/[\s,.-]+$/, '');
+  if (company && company.toLowerCase() !== tail.toLowerCase() && !tail.toLowerCase().startsWith(company.toLowerCase().slice(0, 6))) return { title: title.trim(), company };
+  const head = m[1].replace(/\s+(job|vacancy|recruitment|position|role)$/i, '').trim();
+  return { title: head, company: company || tail };
+}
+
 export function hashJob(title, company, city) {
   const key = [title, company, city].map((x) => (x || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()).join('|');
   return createHash('sha1').update(key).digest('hex').slice(0, 20);
@@ -118,9 +129,10 @@ export function hashJob(title, company, city) {
  * @returns {object|null} row for jobs table, or null if the job should be dropped
  */
 export function normalize(raw, source) {
-  const title = (raw.title || '').replace(/\s+/g, ' ').trim();
+  const split = splitTitleCompany((raw.title || '').replace(/\s+/g, ' ').trim(), (raw.company || '').replace(/\s+/g, ' ').trim());
+  const title = split.title;
   if (!title || !raw.apply_url) return null;
-  const company = (raw.company || '').replace(/\s+/g, ' ').trim() || null;
+  const company = split.company || null;
   const locationText = (raw.location_text || '').replace(/\s+/g, ' ').trim();
   const body = raw.description_html || raw.description_text || '';
   const bodyText = stripTags(body);

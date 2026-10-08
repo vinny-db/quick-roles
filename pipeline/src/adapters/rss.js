@@ -19,7 +19,7 @@ export function makeRssAdapter(cfg) {
         const title = field(b, 'title');
         if (!link || !title) continue;
         const desc = field(b, 'content:encoded') || field(b, 'description') || field(b, 'summary') || field(b, 'content');
-        const company = field(b, 'company') || field(b, 'job_listing:company') || cfg.companyFromTitle?.(title) || guessCompany(title, desc) || '';
+        const company = field(b, 'company') || field(b, 'job_listing:company') || cfg.companyFromTitle?.(title) || guessCompany(title, desc) || cfg.defaultCompany || '';
         const location = field(b, 'location') || field(b, 'job_listing:location') || cfg.defaultLocation || guessLocation(title, desc) || '';
         const deadline = toDate(field(b, 'deadlineDate') || field(b, 'deadline') || field(b, 'expires'));
         out.push({
