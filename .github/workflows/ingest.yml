@@ -22,6 +22,9 @@ concurrency:
   group: ingest
   cancel-in-progress: false
 
+permissions:
+  contents: write
+
 jobs:
   ingest:
     runs-on: ubuntu-latest
@@ -54,10 +57,14 @@ jobs:
           else
             node pipeline/src/run.js --cadence "${{ steps.cad.outputs.cadence }}"
           fi
-      - name: Upload dry-run snapshot
+      - name: Publish dry-run report to the reports branch
         if: always() && github.event.inputs.dry_run == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: snapshot
-          path: pipeline/out/
-          if-no-files-found: ignore
+        run: |
+          node pipeline/src/report.js || true
+          git config user.name "quickroles-bot"
+          git config user.email "bots@quickroles.africa"
+          git fetch origin reports:reports 2>/dev/null || true
+          git checkout -B reports
+          git add -f reports/ pipeline/out/ || true
+          git commit -m "Dry run report $(date -u +%FT%TZ)" || echo "nothing to commit"
+          git push -f origin reports
