@@ -1,0 +1,11 @@
+{
+  "name": "quick-roles-pipeline",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "ingest": "node src/run.js --cadence hourly",
+    "ingest:all": "node src/run.js --all",
+    "dry": "DRY_RUN=1 node src/run.js --all"
+  }
+}

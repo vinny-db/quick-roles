@@ -1,0 +1,5 @@
+node_modules/
+pipeline/out/
+.env*
+.vercel
+web/.next/

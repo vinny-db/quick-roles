@@ -27,9 +27,9 @@ Type: Archivo Black (display, all headings), Instrument Serif italic (one accent
 Shapes: pills everywhere (999px radius), 2px black outlines on cards, chips and bands, 3px on stickers and primary buttons, hard offset shadows (4px 4px 0) in butter, blush, lavender or the card shadow tone. Stickers rotate 4 to 14 degrees. No gradients, no emoji, no characters.
 
 ## Navigation (decided in the review pass)
-Desktop: wordmark left (ROLES sits on a tilted butter marker). Nav as bold text, not pills: Browse jobs · Remote · Fresh grads · Companies. The active item carries a tilted butter marker under the word. Right side: Post a job (quiet text), Get alerts (outline pill), Find my match (black pill, butter shadow). Header has a 2px black bottom rule.
+Desktop: wordmark left (ROLES sits on a tilted butter marker). Nav as bold text, not pills: Browse jobs · Remote · Fresh grads. The active item carries a tilted butter marker under the word. Right side: Post a job (quiet text), Get alerts (outline pill), Find my match (black pill, butter shadow). Header has no bottom rule (removed 8 Oct).
 
-Why these four: they map to how people actually look (everything, remote only, my stage, which companies). "Companies" shows off employer-direct listings with logos, which no Nigerian board does. Government moved to a footer strip plus its own search page. "NYSC" became "Fresh grads" (covers NYSC, internships, graduate trainee).
+Why these three: they map to how people actually look (everything, remote only, my stage). Companies was dropped to keep the bar uncrowded. Government moved to a footer strip plus its own search page. "NYSC" became "Fresh grads" (covers NYSC, internships, graduate trainee).
 
 Phone: wordmark plus menu at the top; a bottom tab bar with Jobs · Remote · Match (raised black circle, blush shadow) · Alerts. Replaces the sticky alerts banner.
 
