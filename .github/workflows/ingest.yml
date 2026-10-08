@@ -52,13 +52,15 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           DRY_RUN: ${{ github.event.inputs.dry_run == 'true' && '1' || '' }}
         run: |
+          mkdir -p pipeline/out
+          set -o pipefail
           if [ -n "${{ github.event.inputs.only }}" ]; then
-            node pipeline/src/run.js --only "${{ github.event.inputs.only }}"
+            node pipeline/src/run.js --only "${{ github.event.inputs.only }}" 2>&1 | tee pipeline/out/log.txt
           else
-            node pipeline/src/run.js --cadence "${{ steps.cad.outputs.cadence }}"
+            node pipeline/src/run.js --cadence "${{ steps.cad.outputs.cadence }}" 2>&1 | tee pipeline/out/log.txt
           fi
-      - name: Publish dry-run report to the reports branch
-        if: always() && github.event.inputs.dry_run == 'true'
+      - name: Publish run report to the reports branch
+        if: always()
         run: |
           node pipeline/src/report.js || true
           git config user.name "quickroles-bot"

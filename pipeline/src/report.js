@@ -2,9 +2,12 @@
 import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises';
 
 const outDir = new URL('../out/', import.meta.url);
-const files = (await readdir(outDir)).filter((f) => f.endsWith('.json') && f !== '_summary.json');
-const summary = JSON.parse(await readFile(new URL('_summary.json', outDir), 'utf8'));
-const lines = [`# Pipeline dry run, ${new Date().toISOString()}`, '', '| Source | OK | Jobs | Dropped | Error |', '|---|---|---|---|---|'];
+const files = (await readdir(outDir).catch(() => [])).filter((f) => f.endsWith('.json') && f !== '_summary.json');
+let summary = [];
+try { summary = JSON.parse(await readFile(new URL('_summary.json', outDir), 'utf8')); } catch {}
+let log = '';
+try { log = await readFile(new URL('log.txt', outDir), 'utf8'); } catch {}
+const lines = [`# Pipeline run, ${new Date().toISOString()}`, '', '## Log (last 80 lines)', '', '```', ...log.split('\n').slice(-80), '```', '', '| Source | OK | Jobs | Dropped | Error |', '|---|---|---|---|---|'];
 let total = 0;
 for (const r of summary.sort((a, b) => (b.count || 0) - (a.count || 0))) {
   total += r.count || 0;

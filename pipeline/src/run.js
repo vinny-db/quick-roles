@@ -111,7 +111,7 @@ async function main() {
   const total = ok.reduce((a, r) => a + r.count, 0);
   console.log(`\nDone: ${ok.length}/${results.length} sources ok, ${total} jobs.`);
   for (const r of results.filter((r) => !r.ok)) console.log(`  failed: ${r.id}: ${r.error}`);
-  if (DRY) await writeSnapshot('_summary', results);
+  await writeSnapshot('_summary', results);
   if (ok.length === 0 && results.length) process.exit(1);
 }
 
