@@ -10,6 +10,7 @@ const AFRICA_HINTS = ['nigeria', 'africa', 'ghana', 'kenya', 'south africa', 'eg
 const WORLDWIDE_HINTS = ['worldwide', 'anywhere', 'global', 'international', 'remote - any', 'any location', 'fully remote', 'work from anywhere'];
 const EMEA_HINTS = ['emea', 'europe, middle east', 'europe/africa', 'africa/europe', 'utc', 'gmt'];
 const NON_AFRICA = ['united states', 'usa', 'u.s.', 'new york', 'san francisco', 'california', 'texas', 'canada', 'toronto', 'united kingdom', 'london', 'england', 'germany', 'berlin', 'france', 'paris', 'netherlands', 'amsterdam', 'spain', 'portugal', 'italy', 'poland', 'ireland', 'dublin', 'india', 'bangalore', 'bengaluru', 'mumbai', 'pakistan', 'philippines', 'singapore', 'australia', 'sydney', 'brazil', 'mexico', 'argentina', 'dubai', 'uae', 'saudi', 'qatar', 'israel', 'turkey', 'japan', 'china', 'hong kong', 'sweden', 'norway', 'denmark', 'finland', 'switzerland', 'austria', 'belgium', 'czech', 'romania', 'ukraine', 'vietnam', 'indonesia', 'malaysia', 'thailand', 'new zealand'];
+const NON_AFRICA_RE = /\b(uk|u\.k\.|usa|u\.s\.a?\.?|us|eu|apac|latam|emea only|north america|south america|oceania|canada|australia)\b/i;
 const EXCLUDE_REMOTE = [/\bus only\b/, /\busa only\b/, /united states only/, /\bus[- ]based\b/, /\bcanada only\b/, /\beu only\b/, /\buk only\b/, /\bus\/canada\b/, /\bnorth america\b/, /\blatam\b/, /\bapac\b/, /\baustralia\b/];
 
 export function detectCity(text = '') {
@@ -25,7 +26,7 @@ export function detectCountry(text = '') {
   if (t.includes('kenya')) return 'KE';
   if (t.includes('south africa')) return 'ZA';
   if (AFRICA_HINTS.some((h) => t.includes(h))) return 'AF';
-  if (NON_AFRICA.some((h) => t.includes(h))) return 'XX';
+  if (NON_AFRICA.some((h) => t.includes(h)) || NON_AFRICA_RE.test(t)) return 'XX';
   return null;
 }
 
@@ -47,7 +48,7 @@ export function detectRemoteScope(locationText = '') {
   if (AFRICA_HINTS.some((h) => t.includes(h))) return 'africa';
   if (WORLDWIDE_HINTS.some((h) => t.includes(h))) return 'worldwide';
   if (EMEA_HINTS.some((h) => t.includes(h))) return 'emea';
-  if (NON_AFRICA.some((h) => t.includes(h))) return null; // region-locked elsewhere
+  if (NON_AFRICA.some((h) => t.includes(h)) || NON_AFRICA_RE.test(t)) return null; // region-locked elsewhere
   return 'unknown';
 }
 
