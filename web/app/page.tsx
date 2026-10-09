@@ -22,8 +22,8 @@ export default async function Home() {
         <section className="wrap hero">
           <span className="pill-live"><i aria-hidden="true" />{newToday.toLocaleString()} new roles since yesterday</span>
           <h1>We&apos;re hiring<span className="bang">!</span></h1>
-          <p className="turn">Well, they&apos;re hiring. We just made it easier.</p>
-          <p className="sub">Every open role in Nigeria plus the remote ones that take you. Checked every hour. No login, no fees, no stories.</p>
+          <p className="turn hide-m">Well, they&apos;re hiring. We just made it easier.</p>
+          <p className="sub hide-m">Every open role in Nigeria plus the remote ones that take you. Checked every hour. No login, no fees, no stories.</p>
           <form className="search" action="/jobs" method="get" role="search">
             <SearchIcon size={20} />
             <label htmlFor="q" className="sr-only">Search jobs</label>
@@ -33,7 +33,7 @@ export default async function Home() {
           <div className="jump">
             {JUMP.map(([l, h]) => <Link key={h} href={h}>{l}</Link>)}
           </div>
-          <Link href="/match" className="matchcard">
+          <Link href="/match" className="matchcard hide-m">
             <div><b>Not sure what to search?</b><small>Find my match · four taps, 30 seconds</small></div>
             <i><ArrowIcon /></i>
           </Link>
@@ -42,20 +42,26 @@ export default async function Home() {
         <section className="wrap">
           <div className="section-head">
             <h2>Just dropped</h2>
-            <span className="muted" style={{ fontSize: 13 }}>{s.lastRun ? `Checked ${timeAgo(s.lastRun)}` : 'Checked every hour'}</span>
+            <span className="muted hide-m" style={{ fontSize: 13 }}>{s.lastRun ? `Checked ${timeAgo(s.lastRun)}` : 'Checked every hour'}</span>
             <Link href="/jobs" className="more">All jobs →</Link>
           </div>
           {jobs.length ? (
-            <div className="grid2">{jobs.map((j) => <JobCard key={j.id} job={j} />)}</div>
+            <div className="grid2 home-grid">{jobs.map((j) => <JobCard key={j.id} job={j} />)}</div>
           ) : (
             <div className="empty"><h3>Finding the fresh ones.</h3><p className="muted">The first hourly check lands shortly.</p></div>
           )}
           <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 18 }}><Link href="/jobs" className="btn">See all {s.live ? s.live.toLocaleString() : ''} jobs</Link></div>
         </section>
 
-        <section className="wrap"><AlertsBand /></section>
+        <section className="wrap hide-m"><AlertsBand /></section>
+        <section className="wrap show-m">
+          <Link href="/alerts" className="cta-card">
+            <div><b>Don&apos;t chase. Get chased.</b><small>New jobs that match you, by email or Telegram.</small></div>
+            <i><ArrowIcon /></i>
+          </Link>
+        </section>
 
-        <section className="wrap boxes">
+        <section className="wrap boxes hide-m">
           <div className="box butter">
             <h3>Hiring? Post it free.</h3>
             <p>We put it in front of the right people. Every post is checked before it goes live.</p>

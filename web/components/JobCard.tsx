@@ -47,7 +47,7 @@ export function JobCard({ job }: { job: Job }) {
         {dl && <span className={`chip ${dl.urgent ? 'chip-blush' : ''}`}>{dl.text}</span>}
       </div>
       <div className="card-foot">
-        <span>{job.attribution || 'Via source'}</span>
+        <span className="hide-m">{job.attribution || 'Via source'}</span>
         <Link href={`/job/${job.slug}`} className="btn btn-sm btn-soft spacer">Learn more</Link>
         <a href={job.apply_url} target="_blank" rel="nofollow noopener" className="btn btn-sm btn-ink">Apply <ExtIcon /></a>
       </div>
