@@ -65,21 +65,37 @@ export async function JobListPage({ sp, base, title, intro, preset = {}, active,
           {Object.entries(sp).filter(([k]) => !['q', 'loc', 'page'].includes(k)).map(([k, v]) => <input key={k} type="hidden" name={k} value={Array.isArray(v) ? v.join(',') : v || ''} />)}
           <button type="submit" className="btn btn-ink">Search</button>
         </form>
-        <div className="filters">
-          {MODE.map(([v, l]) => <Toggle key={v} k="mode" v={v} label={l} />)}
-          {!lockedKeys.includes('mode') && !lockedKeys.includes('level') && <span className="sep" aria-hidden="true" />}
-          {LEVEL.map(([v, l]) => <Toggle key={v} k="level" v={v} label={l} />)}
-        </div>
-        <div className="filters" style={{ paddingTop: 6 }}>
-          {LANE.map(([v, l]) => <Toggle key={v} k="lane" v={v} label={l} />)}
-        </div>
-        <div className="filters" style={{ paddingTop: 6 }}>
-          {!lockedKeys.includes('posted') && POSTED.map(([v, l]) => <Link key={v} href={withParam(base, sp, 'posted', sp.posted === v ? null : v)} className={sp.posted === v ? 'on' : ''}>{l}</Link>)}
-          {!lockedKeys.includes('salary') && <Link href={withParam(base, sp, 'salary', sp.salary === '1' ? null : '1')} className={sp.salary === '1' ? 'on' : ''}>Pays well</Link>}
-          <span className="sep" aria-hidden="true" />
-          <span className="muted" style={{ fontSize: 12.5, fontWeight: 600 }}>Sort</span>
-          {SORT.map(([v, l]) => <Link key={v} href={withParam(base, sp, 'sort', v === 'newest' ? null : v)} className={q.sort === v ? 'on' : ''}>{l}</Link>)}
-        </div>
+        {(() => {
+          const active = ['mode', 'level', 'lane', 'posted', 'salary'].reduce((n, k) => n + (lockedKeys.includes(k) ? 0 : arr(sp[k]).length), 0) + (q.sort !== 'newest' ? 1 : 0);
+          const rows = (
+            <>
+              <div className="filters">
+                {MODE.map(([v, l]) => <Toggle key={v} k="mode" v={v} label={l} />)}
+                {!lockedKeys.includes('mode') && !lockedKeys.includes('level') && <span className="sep" aria-hidden="true" />}
+                {LEVEL.map(([v, l]) => <Toggle key={v} k="level" v={v} label={l} />)}
+              </div>
+              <div className="filters" style={{ paddingTop: 6 }}>
+                {LANE.map(([v, l]) => <Toggle key={v} k="lane" v={v} label={l} />)}
+              </div>
+              <div className="filters" style={{ paddingTop: 6 }}>
+                {!lockedKeys.includes('posted') && POSTED.map(([v, l]) => <Link key={v} href={withParam(base, sp, 'posted', sp.posted === v ? null : v)} className={sp.posted === v ? 'on' : ''}>{l}</Link>)}
+                {!lockedKeys.includes('salary') && <Link href={withParam(base, sp, 'salary', sp.salary === '1' ? null : '1')} className={sp.salary === '1' ? 'on' : ''}>Pays well</Link>}
+                <span className="sep" aria-hidden="true" />
+                <span className="muted" style={{ fontSize: 12.5, fontWeight: 600 }}>Sort</span>
+                {SORT.map(([v, l]) => <Link key={v} href={withParam(base, sp, 'sort', v === 'newest' ? null : v)} className={q.sort === v ? 'on' : ''}>{l}</Link>)}
+              </div>
+            </>
+          );
+          return (
+            <>
+              <div className="hide-m">{rows}</div>
+              <details className="show-m fdetails" open={active > 0}>
+                <summary className="btn btn-sm btn-soft">Filters and sort{active ? ` · ${active} on` : ''}</summary>
+                {rows}
+              </details>
+            </>
+          );
+        })()}
         {jobs.length ? (
           <div className="grid2">{jobs.map((j) => <JobCard key={j.id} job={j} />)}</div>
         ) : (

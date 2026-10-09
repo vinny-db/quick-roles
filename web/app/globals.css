@@ -195,8 +195,10 @@ img { max-width: 100%; }
 .filters a.on, .filters button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
 .filters .sep { width: 1px; height: 20px; background: var(--line-strong); margin: 0 4px; }
 .filters select { border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 600; background: var(--surface); min-height: 36px; }
-.filters details { display: contents; }
-.filters summary { list-style: none; cursor: pointer; }
+.fdetails { padding-top: 12px; }
+.fdetails > summary { list-style: none; cursor: pointer; width: fit-content; }
+.fdetails > summary::-webkit-details-marker { display: none; }
+.fdetails[open] > summary { background: var(--ink); color: #fff; }
 .pager { display: flex; justify-content: center; gap: 8px; padding-top: 22px; }
 .empty { background: var(--surface); border-radius: 18px; padding: 40px 24px; text-align: center; margin-top: 14px; box-shadow: var(--shadow-card); }
 .empty h3 { font-size: 22px; }

@@ -19,7 +19,7 @@ export function AlertsBand({ keyword = '', location = '', compact = false }: { k
           <label htmlFor="ap" className="sr-only">Phone, optional</label>
           <input id="ap" name="phone" type="tel" placeholder="+234 phone (optional)" />
         </div>
-        <label className="consent"><input type="checkbox" name="consent" value="yes" required style={{ marginTop: 3 }} /> Yes, send me matching jobs. I can stop anytime. <a href="/privacy" style={{ textDecoration: 'underline' }}>How we handle your details</a>.</label>
+        <label className="consent"><input type="checkbox" name="consent" value="yes" required style={{ marginTop: 3 }} /><span>Yes, send me matching jobs. I can stop anytime. <a href="/privacy" style={{ textDecoration: 'underline' }}>How we handle your details</a>.</span></label>
         <div className="row" style={{ alignItems: 'center', gap: 12 }}>
           <button type="submit" className="btn btn-ink">Send me jobs</button>
           <span className="hint">Email, phone, or both.</span>
