@@ -13,30 +13,43 @@ const JUMP = [
 
 export default async function Home() {
   const ready = configured();
-  const [{ jobs }, s] = ready ? await Promise.all([listJobs({ limit: 10, excludeSources: ['uncareers'] }), stats()]) : [{ jobs: [] as any[] }, { live: 0, today: 0, lastRun: null }];
+  const [{ jobs }, s] = ready ? await Promise.all([listJobs({ limit: 12, excludeSources: ['uncareers'] }), stats()]) : [{ jobs: [] as any[] }, { live: 0, today: 0, lastRun: null }];
   const newToday = s.today;
   return (
     <>
       <Header />
       <main>
         <section className="wrap hero">
-          <span className="pill-live"><i aria-hidden="true" />{newToday.toLocaleString()} new roles since yesterday</span>
-          <h1>We&apos;re hiring<span className="bang">!</span></h1>
-          <p className="turn hide-m">Well, they&apos;re hiring. We just made it easier.</p>
-          <p className="sub hide-m">Every open role in Nigeria plus the remote ones that take you. Checked every hour. No login, no fees, no stories.</p>
-          <form className="search" action="/jobs" method="get" role="search">
-            <SearchIcon size={20} />
-            <label htmlFor="q" className="sr-only">Search jobs</label>
-            <input id="q" name="q" type="search" placeholder="Try “accountant, Lagos” or “remote design”" autoComplete="off" />
-            <button type="submit" className="btn btn-ink">Search</button>
-          </form>
-          <div className="jump">
-            {JUMP.map(([l, h]) => <Link key={h} href={h}>{l}</Link>)}
+          <div className="hero-grid">
+            <div>
+              <span className="pill-live"><i aria-hidden="true" />{newToday.toLocaleString()} new roles since yesterday</span>
+              <h1>We&apos;re hiring<span className="bang">!</span></h1>
+              <p className="turn hide-m">Well, they&apos;re hiring. We just made it easier.</p>
+              <p className="sub hide-m">Every open role in Nigeria plus the remote ones that take you. Checked every hour. No login, no fees, no stories.</p>
+              <form className="search" action="/jobs" method="get" role="search">
+                <SearchIcon size={20} />
+                <label htmlFor="q" className="sr-only">Search jobs</label>
+                <input id="q" name="q" type="search" placeholder="Try “accountant, Lagos” or “remote design”" autoComplete="off" />
+                <button type="submit" className="btn btn-ink">Search</button>
+              </form>
+              <div className="jump">
+                {JUMP.map(([l, h]) => <Link key={h} href={h}>{l}</Link>)}
+              </div>
+            </div>
+            <aside className="hero-side hide-m">
+              <Link href="/match" className="matchcard tall">
+                <span className="chip chip-mint" style={{ width: 'fit-content' }}>30 seconds</span>
+                <b>Not sure what to search?</b>
+                <small>Four taps: how you work, your level, your lane, where. We hand you the jobs that fit.</small>
+                <span className="btn btn-ink btn-sm" style={{ width: 'fit-content', marginTop: 6 }}>Find my match <ArrowIcon size={15} /></span>
+              </Link>
+              <div className="hero-stats">
+                <span><b>{s.live.toLocaleString()}</b> live jobs</span>
+                <span><b>29</b> sources</span>
+                <span>{s.lastRun ? `Checked ${timeAgo(s.lastRun)}` : 'Checked hourly'}</span>
+              </div>
+            </aside>
           </div>
-          <Link href="/match" className="matchcard hide-m">
-            <div><b>Not sure what to search?</b><small>Find my match · four taps, 30 seconds</small></div>
-            <i><ArrowIcon /></i>
-          </Link>
         </section>
 
         <section className="wrap">
