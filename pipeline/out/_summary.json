@@ -1,0 +1,74 @@
+[
+  {
+    "id": "jobicy",
+    "ok": true,
+    "count": 13,
+    "dropped": 187
+  },
+  {
+    "id": "wwr",
+    "ok": true,
+    "count": 85,
+    "dropped": 4
+  },
+  {
+    "id": "remoteok",
+    "ok": true,
+    "count": 64,
+    "dropped": 35
+  },
+  {
+    "id": "jobgurus",
+    "ok": true,
+    "count": 70,
+    "dropped": 0
+  },
+  {
+    "id": "ngojobsinafrica",
+    "ok": true,
+    "count": 10,
+    "dropped": 0
+  },
+  {
+    "id": "jobwebghana",
+    "ok": true,
+    "count": 10,
+    "dropped": 0
+  },
+  {
+    "id": "telegram:tohire",
+    "ok": true,
+    "count": 20,
+    "dropped": 0
+  },
+  {
+    "id": "telegram:jobnow",
+    "ok": true,
+    "count": 7,
+    "dropped": 0
+  },
+  {
+    "id": "telegram:worka",
+    "ok": true,
+    "count": 16,
+    "dropped": 0
+  },
+  {
+    "id": "telegram:legitremote",
+    "ok": true,
+    "count": 16,
+    "dropped": 0
+  },
+  {
+    "id": "telegram:jobsng",
+    "ok": true,
+    "count": 14,
+    "dropped": 0
+  },
+  {
+    "id": "himalayas",
+    "ok": true,
+    "count": 11,
+    "dropped": 149
+  }
+]
